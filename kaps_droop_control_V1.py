@@ -48,12 +48,7 @@ global V_cri
 global A
 global Pc
 global Del_pc
-global multiply_factor
 global B_inv
-global del_PC_list
-global Pc_list
-global Pinv_list
-global voltage11_12_list
 
 
 Final_power = []
@@ -73,7 +68,6 @@ sensitivity = np.matrix([ [0.0509, 0.0509, 0.0486,0.0486, 0.0468,0.0468, 0.0455,
                         [0.0510, 0.0510, 0.1055,0.1055, 0.1595,0.1595, 0.2136, 0.2136,0.2682,0.2682, 0.3241, 0.3241],
                         [0.0510, 0.0510, 0.1055,0.1055, 0.1595,0.1595, 0.2136, 0.2136,0.2682,0.2682, 0.3241, 0.3241]])
 
-House_name=["H1","H2","H3","H4","H5","H6","H7","H8","H9","H10","H11","H12"]
 vcri = 1.042;
 PV_capacity = round(-75000/12.0, 4)
 Pcurtail = np.full((12,1),0.0)
@@ -82,12 +76,8 @@ V_cri = np.full((12,1), 240*vcri)
 A  = np.full((12,1),0.0)
 Pc = 0
 Del_Pc = 0
-B = m*sensitivity/1000 + I
+B = m*sensitivity/1000.0 + I
 B_inv = np.linalg.inv(B)
-Del_Pc_list = []
-Pc_list = []
-Pinv_list = []
-voltage11_12_list = []
 
 
 HOUSES = []
@@ -102,7 +92,7 @@ with open(HOUSE_FILE) as f:
 
 def change_power(mat_del_pc,i):
 
-     if abs(voltage[i,0]) > vcri:
+     if abs(voltage[i,0]) > vcri*240:
                    Del_Pc = mat_del_pc
                    Pc = round(Pcurtail[i,0]+Del_Pc, 4)
                    Pinv = round(PV_capacity+Pc,4)
@@ -132,7 +122,7 @@ def get_message(Load):
     transfer = MessageCommonData()
 
     for k in range(0,12):
-        if voltage[k,0]>vcri:
+        if voltage[k,0]>vcri*240:
             A[k,0] = m*voltage[k,0] - m*V_cri[k,0] - Pcurtail[k,0]
         else:
             A[k,0] = 0
