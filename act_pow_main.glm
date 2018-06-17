@@ -1,0 +1,573 @@
+#set profiler=1
+//#set threadcount=1;
+//#set relax_naming_rules=1
+#set minimum_timestep=60;
+
+clock {
+	timezone PST+8;
+	timestamp '2014-06-22 00:00:00';
+	stoptime '2014-06-22 23:59:00';
+	
+}
+
+module powerflow;
+module tape;
+
+
+module powerflow {
+    solver_method NR;
+	line_limits FALSE;
+	//line_capacitance true;
+	line_capacitance true;
+}
+//module tape;//for player to make load dyanmic load 0.45 MW
+
+#define stylesheet=http://gridlab-d.svn.sourceforge.net/viewvc/gridlab-d/trunk/core/gridlabd-2_0
+object transformer_configuration {
+	name transformer_configuration_1418_A;
+	connect_type SINGLE_PHASE;
+	install_type PADMOUNT;
+	primary_voltage 14400.0 V;
+	secondary_voltage 244.8 V;
+	powerA_rating 75.0;
+	resistance 0.018;
+	reactance 0.045;
+}
+				
+
+
+
+object line_configuration {
+	name triplex_line_configuration_OH;
+	    z11 1.1137+0.291218j;//0.860999+0.806922j;
+		z12 0;
+		z13 0;
+		z21 0;
+		z22 0;
+		z23 0;
+		z31 0;
+		z32 0;
+		z33 0;
+		c11 72 nF/km;
+}
+
+object line_configuration {
+	name triplex_line_configuration_UG;
+	    z11  1.76706+0.279085j;//0.860999+0.806922j;
+		z12 0;
+		z13 0;
+		z21 0;
+		z22 0;
+		z23 0;
+		z31 0;
+		z32 0;
+		z33 0;
+		c11 55 nF/km;
+}
+
+
+// Defining distribution network .................................
+object meter {
+	name substation;
+	phases "ABCN";
+	bustype SWING;
+	voltage_A +14400+0.000j;
+	voltage_B -7200-12470.765j;
+	voltage_C -7200+12470.76j;
+	nominal_voltage 14400;
+}
+
+
+		
+
+object transformer {
+	name distribution_transformer_N6A_D;
+	phases AN;
+	from substation;
+	to N6A_D1;
+	configuration transformer_configuration_1418_A;
+}
+
+object meter {
+	name N6A_D1;
+	phases AN;
+	nominal_voltage 240;	
+}
+
+///////////////////////////////////////////////////
+object overhead_line {
+	name LN6A_DH1;
+	phases AN;
+	from N6A_D1;
+	to PV_N6A_DH1;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+object meter{
+       name meter_PV_N6A_DH1;
+       phases AN;
+	   nominal_voltage 240;
+       groupid House_Meter;   	   
+}
+
+
+/////////////////////////////////////////////////////////////////////////	
+
+object overhead_line {
+	name LN6A_DH2;
+	phases AN;
+	from N6A_D1;
+	to PV_N6A_DH2;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+object meter {
+       name meter_PV_N6A_DH2;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;
+	   
+
+}
+
+////modularity start here
+
+object overhead_line {
+	name LN6A_D1;
+	phases AN;
+	from N6A_D1;
+	to N6A_D2;
+	length 65.6168;
+	configuration triplex_line_configuration_OH;
+}
+
+object node {
+	name N6A_D2;
+	phases AN;
+	nominal_voltage 240;
+}
+
+///////////////////////////////////////////////////
+object overhead_line {
+	name LN6A_DH3;
+	phases AN;
+	from N6A_D2;
+	to PV_N6A_DH3;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+
+object meter {
+       name meter_PV_N6A_DH3;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;
+	   
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////	
+
+object overhead_line {
+	name LN6A_DH4;
+	phases AN;
+	from N6A_D2;
+	to PV_N6A_DH4;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+
+object meter {
+       name meter_PV_N6A_DH4;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;
+}
+///modularity ends
+
+////modularity start here
+
+object overhead_line {
+	name LN6A_D2;
+	phases AN;
+	from N6A_D2;
+	to N6A_D3;
+	length 65.6168;
+	configuration triplex_line_configuration_OH;
+}
+
+object meter {
+	name N6A_D3;
+	phases AN;
+	nominal_voltage 240;
+}
+
+///////////////////////////////////////////////////
+object overhead_line {
+	name LN6A_DH5;
+	phases AN;
+	from N6A_D3;
+	to PV_N6A_DH5;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+
+object meter {
+       name meter_PV_N6A_DH5;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;
+	   
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////	
+
+object overhead_line {
+	name LN6A_DH6;
+	phases AN;
+	from N6A_D3;
+	to PV_N6A_DH6;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+
+
+
+object meter {
+       name meter_PV_N6A_DH6;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;
+}
+///modularity ends
+
+////modularity start here
+
+object overhead_line {
+	name LN6A_D3;
+	phases AN;
+	from N6A_D3;
+	to N6A_D4;
+	length 65.6168;
+	configuration triplex_line_configuration_OH;
+}
+
+object meter {
+	name N6A_D4;
+	phases AN;
+	nominal_voltage 240;
+}
+
+///////////////////////////////////////////////////
+object overhead_line {
+	name LN6A_DH7;
+	phases AN;
+	from N6A_D4;
+	to PV_N6A_DH7;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+
+object meter {
+       name meter_PV_N6A_DH7;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;	   
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////	
+
+object overhead_line {
+	name LN6A_DH8;
+	phases AN;
+	from N6A_D4;
+	to PV_N6A_DH8;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+
+
+
+object meter {
+       name meter_PV_N6A_DH8;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;
+}
+///modularity ends
+
+////modularity start here
+
+object overhead_line {
+	name LN6A_D4;
+	phases AN;
+	from N6A_D4;
+	to N6A_D5;
+	length 65.6168;
+	configuration triplex_line_configuration_OH;
+}
+
+object meter {
+	name N6A_D5;
+	phases AN;
+	nominal_voltage 240;
+}
+
+///////////////////////////////////////////////////
+object overhead_line {
+	name LN6A_DH9;
+	phases AN;
+	from N6A_D5;
+	to PV_N6A_DH9;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+
+object meter {
+       name meter_PV_N6A_DH9;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;	   
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////	
+
+object overhead_line {
+	name LN6A_DH10;
+	phases AN;
+	from N6A_D5;
+	to PV_N6A_DH10;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+
+
+
+object meter {
+       name meter_PV_N6A_DH10;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;
+}
+///modularity ends
+
+
+////modularity start here
+
+object overhead_line {
+	name LN6A_D5;
+	phases AN;
+	from N6A_D5;
+	to N6A_D6;
+	length 65.6168;
+	configuration triplex_line_configuration_OH;
+}
+
+object meter {
+	name N6A_D6;
+	phases AN;
+	nominal_voltage 240;
+}
+
+///////////////////////////////////////////////////
+object overhead_line {
+	name LN6A_DH11;
+	phases AN;
+	from N6A_D6;
+	to PV_N6A_DH11;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+
+object meter {
+       name meter_PV_N6A_DH11;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;	   
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////	
+
+object overhead_line {
+	name LN6A_DH12;
+	phases AN;
+	from N6A_D6;
+	to PV_N6A_DH12;
+	length 65.6168;
+	configuration triplex_line_configuration_UG;
+}
+
+
+
+
+object meter {
+       name meter_PV_N6A_DH12;
+       phases AN;
+  	   nominal_voltage 240;
+       groupid House_Meter;
+}
+///modularity ends
+
+object load{
+		name PV_N6A_DH1;
+		parent meter_PV_N6A_DH1;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+object load{
+		name PV_N6A_DH2;
+		parent meter_PV_N6A_DH2;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+object load{
+		name PV_N6A_DH3;
+		parent meter_PV_N6A_DH3;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+object load{
+		name PV_N6A_DH4;
+		parent meter_PV_N6A_DH4;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+
+object load{
+		name PV_N6A_DH5;
+		parent meter_PV_N6A_DH5;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+object load{
+		name PV_N6A_DH6;
+		parent meter_PV_N6A_DH6;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+object load{
+		name PV_N6A_DH7;
+		parent meter_PV_N6A_DH7;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+object load{
+		name PV_N6A_DH8;
+		parent meter_PV_N6A_DH8;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+	
+object load{
+		name PV_N6A_DH9;
+		parent meter_PV_N6A_DH9;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+object load{
+		name PV_N6A_DH10;
+		parent meter_PV_N6A_DH10;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+object load{
+		name PV_N6A_DH11;
+		parent meter_PV_N6A_DH11;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}
+object load{
+		name PV_N6A_DH12;
+		parent meter_PV_N6A_DH12;
+		phases AN;
+  	    nominal_voltage 240;
+        groupid house_meter;
+	}	
+
+	
+
+
+
+object group_recorder {
+	property measured_voltage_A;
+	file csv_output/pv_triplex_meter_voltage.csv;
+	group "groupid=House_Meter";
+	interval 60.0;
+	complex_part MAG;
+}
+
+
+object group_recorder {
+	property measured_power_A;
+	file csv_output/pv_triplex_meter_active_power.csv;
+	group "groupid=House_Meter";
+	interval 60.0;
+	complex_part REAL;
+}
+
+object group_recorder {
+	property measured_power_A;
+	file csv_output/pv_triplex_meter_reactive_power.csv;
+	group "groupid=House_Meter";
+	interval 60.0;
+	complex_part IMAG;
+}
+
+object recorder {
+	property measured_power_A;
+	parent N6A_D1;
+	file csv_output/Transformer_VA_Power.csv;
+	interval 60.0;
+}
+
+object recorder {
+	property measured_power_A.real,measured_power_A.imag;
+	parent N6A_D1;
+	file csv_output/Transformer_Watt_Var_Power_sec.csv;
+	interval 60.0;
+}
+
+object recorder {
+	property measured_voltage_A.real,measured_voltage_A.imag;
+	parent N6A_D1;
+	file csv_output/Transformer_volt_sec.csv;
+	interval 60.0;
+}
+
+object recorder {
+	property measured_power_A.real,measured_power_A.imag;
+	parent substation;
+	file csv_output/Transformer_Watt_Var_Power_prim.csv;
+	interval 60.0;
+}
