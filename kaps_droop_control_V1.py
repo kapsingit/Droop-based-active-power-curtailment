@@ -90,3 +90,23 @@ Pinv_list = []
 voltage11_12_list = []
 
 
+HOUSES = []
+with open(HOUSE_FILE) as f:
+    while(True):
+        line = f.readline()
+        if line:
+            HOUSES.append(line.rstrip('\n'))
+        else:
+            break
+
+
+f = open(HOUSE_FILE)
+mylist = []
+for line in f:
+    if line:
+        mylist.append(line.rstrip('\n')
+    else:
+        break
+
+print(mylist)
+
