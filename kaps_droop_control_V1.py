@@ -39,7 +39,6 @@ global voltage
 global node
 global I
 global sensitivity
-global House_name
 global vcri
 global PMPPT
 global Pcurtail
@@ -68,10 +67,10 @@ sensitivity = np.matrix([ [0.0509, 0.0509, 0.0486,0.0486, 0.0468,0.0468, 0.0455,
                         [0.0510, 0.0510, 0.1055,0.1055, 0.1595,0.1595, 0.2136, 0.2136,0.2682,0.2682, 0.3241, 0.3241],
                         [0.0510, 0.0510, 0.1055,0.1055, 0.1595,0.1595, 0.2136, 0.2136,0.2682,0.2682, 0.3241, 0.3241]])
 
-vcri = 1.042
-PMPPT = round(-75000/12.0, 4)
+vcri = 250/240
 Pcurtail = np.full((12,1),0.0)
-m = 8400/((1.058-vcri)*240)
+#m = 8400/((1.058-vcri)*240)
+m = 2100
 V_cri = np.full((12,1), 240*vcri)
 A  = np.full((12,1),0.0)
 Pc = 0
@@ -91,23 +90,29 @@ with open(HOUSE_FILE) as f:
 
 
 def change_power(mat_del_pc,i):
+    global Del_Pc
+    global Pc
+    global PMPPT
+    global vcri
+    global voltage
+    global Pcurtail
 
-     if abs(voltage[i,0]) > (vcri*240):
+    if abs(voltage[i,0])>(vcri*240):
             Del_Pc = mat_del_pc
             Pc = round(Pcurtail[i,0]+Del_Pc, 4)
             Pinv = round(PMPPT+Pc,4)
-     else:
+    else:
             Pinv = PMPPT
             Pc = 0
-     if Pinv>0:
+    if Pinv>0:
          Pinv = 0
 
-     if Pinv<PMPPT:
+    if Pinv<PMPPT:
          Pinv = PMPPT
          Pc = 0
-     Pcurtail[i,0] = Pc
+    Pcurtail[i,0] = Pc
 
-     return Pinv
+    return Pinv
 
 def get_message_final(Load):
 
@@ -124,6 +129,9 @@ def get_message(Load):
     global B_inv
     global A
     global Final_Power
+    global vcri
+    global voltage
+    global Pcurtail
     
     transfer = MessageCommonData()
 
@@ -170,7 +178,7 @@ with open_bus(BUS_FILE_MAIN) as bus_MAIN:
             current_time += pd.to_timedelta('%s s' % (60.0))
 
 
-            if PMPPT < -2000.00:
+            if PMPPT < -2000.0:
                 for loop in range(0,20):
                     result = bus_ITER.transaction(inputs=get_message(current_time_load_data))
         
