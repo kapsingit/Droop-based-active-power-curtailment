@@ -41,7 +41,7 @@ global I
 global sensitivity
 global House_name
 global vcri
-global PV_capacity
+global PMPPT
 global Pcurtail
 global m
 global V_cri
@@ -68,15 +68,15 @@ sensitivity = np.matrix([ [0.0509, 0.0509, 0.0486,0.0486, 0.0468,0.0468, 0.0455,
                         [0.0510, 0.0510, 0.1055,0.1055, 0.1595,0.1595, 0.2136, 0.2136,0.2682,0.2682, 0.3241, 0.3241],
                         [0.0510, 0.0510, 0.1055,0.1055, 0.1595,0.1595, 0.2136, 0.2136,0.2682,0.2682, 0.3241, 0.3241]])
 
-vcri = 1.042;
-PV_capacity = round(-75000/12.0, 4)
+vcri = 1.042
+PMPPT = round(-75000/12.0, 4)
 Pcurtail = np.full((12,1),0.0)
-m = 8400/((1.058-vcri)*240);
+m = 8400/((1.058-vcri)*240)
 V_cri = np.full((12,1), 240*vcri)
 A  = np.full((12,1),0.0)
 Pc = 0
 Del_Pc = 0
-B = m*sensitivity/1000.0 + I
+B = (m/1000.0)*sensitivity + I
 B_inv = np.linalg.inv(B)
 
 
@@ -92,18 +92,18 @@ with open(HOUSE_FILE) as f:
 
 def change_power(mat_del_pc,i):
 
-     if abs(voltage[i,0]) > vcri*240:
-                   Del_Pc = mat_del_pc
-                   Pc = round(Pcurtail[i,0]+Del_Pc, 4)
-                   Pinv = round(PV_capacity+Pc,4)
+     if abs(voltage[i,0]) > (vcri*240):
+            Del_Pc = mat_del_pc
+            Pc = round(Pcurtail[i,0]+Del_Pc, 4)
+            Pinv = round(PMPPT+Pc,4)
      else:
-                   Pinv = PV_capacity
-                   Pc = 0
+            Pinv = PMPPT
+            Pc = 0
      if Pinv>0:
          Pinv = 0
 
-     if Pinv<PV_capacity:
-         Pinv = PV_capacity
+     if Pinv<PMPPT:
+         Pinv = PMPPT
          Pc = 0
      Pcurtail[i,0] = Pc
 
