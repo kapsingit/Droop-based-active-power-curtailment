@@ -114,7 +114,7 @@ def get_message_final(Load):
     transfer = MessageCommonData()
 
     for i,h in enumerate(HOUSES):
-        transfer.add_param(CommonParam(name = h, param = 'constant_power_A', value = (Final_power[i]+Load[i])))
+        transfer.add_param(CommonParam(name = h, param = 'constant_power_A', value = (Final_Power[i]+Load[i])))
     return transfer
 
 def get_message(Load):
@@ -131,15 +131,15 @@ def get_message(Load):
 
     X = X/5
 
-    Final_power = []
+    Final_Power = []
 
     for id, h in enumerate(HOUSES):
 
         inverter_power = change_power(X[id,0],id)
 
-        Final_power.append(inverter_power)
+        Final_Power.append(inverter_power)
 
-        transfer.add_param(CommonParam(name = n,param = 'constant_power_A',value = (inverter_power+Load[id])))
+        transfer.add_param(CommonParam(name = h,param = 'constant_power_A',value = (inverter_power+Load[id])))
         
 
     return transfer
@@ -180,10 +180,10 @@ with open_bus(BUS_FILE_MAIN) as bus_MAIN:
                         
             if PMPPT >= -2000.0:
 
-                Final_power = []
+                Final_Power = []
 
                 for i in range(0,12):
-                    Final_power.append(PMPPT)
+                    Final_Power.append(PMPPT)
 
                 result = bus_MAIN.transaction(inputs=get_message_final(current_time_load_data))
 
