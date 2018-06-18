@@ -51,7 +51,7 @@ global Del_pc
 global B_inv
 
 
-Final_power = []
+Final_Power = []
 voltage = np.full((12,1),240.0)
 node = node=["PV_N6A_DH1","PV_N6A_DH2","PV_N6A_DH3","PV_N6A_DH4","PV_N6A_DH5","PV_N6A_DH6","PV_N6A_DH7","PV_N6A_DH8","PV_N6A_DH9","PV_N6A_DH10","PV_N6A_DH11","PV_N6A_DH12"]
 I = np.identity(12)
@@ -110,6 +110,8 @@ def change_power(mat_del_pc,i):
      return Pinv
 
 def get_message_final(Load):
+
+    global Final_Power
     
     transfer = MessageCommonData()
 
@@ -119,6 +121,10 @@ def get_message_final(Load):
 
 def get_message(Load):
 
+    global B_inv
+    global A
+    global Final_Power
+    
     transfer = MessageCommonData()
 
     for k in range(0,12):
