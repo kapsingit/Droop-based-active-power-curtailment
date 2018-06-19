@@ -1,4 +1,4 @@
-## Code generated : 8:42 PM, 6/17/2018
+## Code generated : 4:32 PM, 6/19/2018
 ## By: Kapil Duwadi, kapil.duwadi@jacks.sdstate.edu
 
 
@@ -45,6 +45,14 @@ global A
 global Pc
 global Del_Pc
 global B_inv
+global q
+global Pnet
+
+Pnet = []
+
+for i in range(0,12):
+    Pnet.append(DATA_FRAME[0][:]-DATA_FRAME[i+1][:])
+
 
 Final_power=[]
 voltage=np.full((12, 1), 240.0)
@@ -63,8 +71,9 @@ sensitivity=np.matrix([ [0.0509, 0.0509, 0.0486,0.0486, 0.0468,0.0468, 0.0455,0.
                         [0.0510, 0.0510, 0.1055,0.1055, 0.1595,0.1595, 0.2136, 0.2136,0.2682,0.2682, 0.3241, 0.3241],
                         [0.0510, 0.0510, 0.1055,0.1055, 0.1595,0.1595, 0.2136, 0.2136,0.2682,0.2682, 0.3241, 0.3241]])
 Pcurtail=np.full((12, 1), 0.0)
-m=4375.0
-V_cri=np.full((12, 1), 252)
+m=1093.8
+q =0.6562
+V_cri=np.full((12, 1), 250)
 A=np.full((12, 1), 0.0)
 Pc=0
 Del_Pc=0
@@ -84,7 +93,7 @@ with open(HOUSE_FILE) as f:
 
 def change_power(mat_del_pc, i):
 
-    if abs(voltage[i,0])>252:
+    if abs(voltage[i,0])>250:
         Del_Pc=mat_del_pc
         Pc=round(Pcurtail[i,0]+Del_Pc,4)
         Pinv=round(PMPPT+Pc,4)
@@ -114,15 +123,18 @@ def get_message_final(LOAD):
     return transfer
 
     
-def get_message(LOAD):
+def get_message(LOAD,time):
     
     global B_inv
     global A
     global Final_power
     transfer = MessageCommonData()
-    for k in range (0,12):
-        if voltage[k,0]>252:
-            A[k,0]=m*voltage[k,0]-m*V_cri[k,0]-Pcurtail[k,0]
+    for k in range(0,12):
+        if voltage[k,0]>250:
+            if Pnet[k][time]>2000:
+                A[k,0]=m*voltage[k,0]-m*V_cri[k,0]-Pcurtail[k,0]+ q*(Pnet[k][time]-2000)
+            else:
+                A[k,0]=m*voltage[k,0]-m*V_cri[k,0]-Pcurtail[k,0]  
         else:
             A[k,0]=0
    
@@ -152,12 +164,11 @@ with open_bus(BUS_FILE_MAIN) as bus_MAIN:
             for i in range(1,13):
                 LOAD_current_time.append(( DATA_FRAME[i][current_time]))
                 
-            current_time += pd.to_timedelta('%s s' % (60.0))
             
             if PMPPT<-2000.0:                
-                for ite_loop in range(0,35):
+                for ite_loop in range(0,100):
                     
-                    result = bus_ITER.transaction(inputs=get_message(LOAD_current_time))
+                    result = bus_ITER.transaction(inputs=get_message(LOAD_current_time, current_time))
                     for z,n in enumerate(node):
                         voltage[z,0]=round(abs(result.get_param(n,"measured_voltage_A").value),3)
                         
@@ -173,7 +184,9 @@ with open_bus(BUS_FILE_MAIN) as bus_MAIN:
                     Final_power.append(PMPPT)                                
                 result = bus_MAIN.transaction(inputs=get_message_final(LOAD_current_time))
                 for z,n in enumerate(node):
-                    voltage[z,0]=round(abs(result.get_param(n,"measured_voltage_A").value),3)                 
+                    voltage[z,0]=round(abs(result.get_param(n,"measured_voltage_A").value),3)
+
+            current_time += pd.to_timedelta('%s s' % (60.0))
 
              
                 
