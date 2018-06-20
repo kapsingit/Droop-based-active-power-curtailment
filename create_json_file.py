@@ -24,7 +24,7 @@ with open("kaps_iter.json","w") as f:
         f.write('\t\t{\n\t')
         f.write('"name": "PV_N6A_DH%d",'%i)
         f.write('\n\t')
-        f.write('"param": "measured_voltage_A"')
+        f.write('"param": "measured_voltage_A",')
         f.write('\n\t')
         f.write('"param": "measured_power_A"')
         if i == 12:
@@ -60,7 +60,7 @@ with open("kaps_main.json","w") as f:
         f.write('\t\t{\n\t')
         f.write('"name": "PV_N6A_DH%d",'%i)
         f.write('\n\t')
-        f.write('"param": "measured_voltage_A"')
+        f.write('"param": "measured_voltage_A",')
         f.write('\n\t')
         f.write('"param": "measured_power_A"')
         if i == 12:

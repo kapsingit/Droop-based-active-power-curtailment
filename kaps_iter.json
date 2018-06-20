@@ -10,62 +10,62 @@
 	"output": [
 		{
 	"name": "PV_N6A_DH1",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH2",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH3",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH4",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH5",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH6",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH7",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH8",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH9",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH10",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH11",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		},
 		{
 	"name": "PV_N6A_DH12",
-	"param": "measured_voltage_A"
+	"param": "measured_voltage_A",
 	"param": "measured_power_A"
 		}
 

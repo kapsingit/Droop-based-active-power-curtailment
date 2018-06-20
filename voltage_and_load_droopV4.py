@@ -29,8 +29,8 @@ current_time = START_TIME
 
 
 HOUSE_FILE = 'agg_zips.txt'
-BUS_FILE_ITER = 'bus_in_iter.json'
-BUS_FILE_MAIN = 'bus_in_main.json'
+BUS_FILE_ITER = 'kaps_iter.json'
+BUS_FILE_MAIN = 'kaps_main.json'
 
 global Final_power
 global voltage
@@ -134,10 +134,11 @@ def get_message(LOAD,time):
     
     transfer = MessageCommonData()
     for k in range(0,12):
-        if voltage[k,0]>250:
+        if voltage[k,0]>250 or flag[k] == 1:
             #if voltage[k,0]>(240*1.05) and flag[k] == 0:
             flag[k] = 1
             A[k,0]=m*voltage[k,0]-m*V_cri[k,0]-Pcurtail[k,0]+ flag[k]*q*(Pnet[k][time])
+
         else:
             A[k,0]=0
    
@@ -194,6 +195,7 @@ with open_bus(BUS_FILE_MAIN) as bus_MAIN:
                     result = bus_ITER.transaction(inputs=get_message(LOAD_current_time, current_time))
                     for z,n in enumerate(node):
                         voltage[z,0]=round(abs(result.get_param(n,"measured_voltage_A").value),3)
+                        #power[z,0] = (round((result.get_param(n,"measured_power_A").value),3)).real
                         if z == 11:
                             er12.append(voltage[z,0]-voltage_prev_12)
                             voltage_prev_12 = voltage[z,0]
@@ -223,7 +225,8 @@ with open_bus(BUS_FILE_MAIN) as bus_MAIN:
                 result = bus_MAIN.transaction(inputs=get_message_final(LOAD_current_time))
 
                 for z,n in enumerate(node):
-                    voltage[z,0]=round(abs(result.get_param(n,"measured_voltage_A").value),3)                  
+                    voltage[z,0]=round(abs(result.get_param(n,"measured_voltage_A").value),3)
+                    #power[z,0] = (round((result.get_param(n,"measured_power_A").value),3)).real
 
             if PMPPT>=-2000.0:
                 Final_power=[]
@@ -232,6 +235,7 @@ with open_bus(BUS_FILE_MAIN) as bus_MAIN:
                 result = bus_MAIN.transaction(inputs=get_message_final(LOAD_current_time))
                 for z,n in enumerate(node):
                     voltage[z,0]=round(abs(result.get_param(n,"measured_voltage_A").value),3)
+                    #power[z,0] = (round((result.get_param(n,"measured_power_A").value),3)).real
 
             current_time += pd.to_timedelta('%s s' % (60.0))
 
